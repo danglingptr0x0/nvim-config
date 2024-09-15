@@ -132,6 +132,8 @@ return {
                 "~/git/work/teddy/theoverseer/",
                 "~/git/HeapZy/",
                 "~/git/cuT/",
+                "~/git/mathNStuff",
+                "~/git/work/c9/phillipl-bot",
             },
         },
         init = function()
