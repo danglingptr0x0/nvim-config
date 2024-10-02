@@ -32,6 +32,9 @@ require("lazy").setup({
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
+require("mason").setup()
+require("mason-lspconfig").setup()
+
 require "nvchad.autocmds"
 require('command-completion').setup()
 require('mini.animate').setup {
@@ -68,6 +71,10 @@ require("ibl").setup {
 hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
 
 vim.api.nvim_set_keymap('n', '<Leader>blame', ':BlameToggle virtual<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-p>', require('fzf-lua').builtin, { desc = "fzf builtins" })
+vim.keymap.set('n', '<C-a>', require('fzf-lua').lsp_code_actions, { desc = "fzf lsp code actions" })
+vim.keymap.set('n', '<Leader>ccc', require('fzf-lua').grep_cword, { desc = "fzf cword" })
+vim.keymap.set('n', '<Leader>CCC', require('fzf-lua').grep_cWORD, { desc = "fzf cWORD" })
 
 vim.schedule(function()
   require "mappings"

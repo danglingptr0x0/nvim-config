@@ -7,6 +7,10 @@ return {
         end,
     },
     {
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim"
+    },
+    {
         "neovim/nvim-lspconfig",
         config = function()
             require("nvchad.configs.lspconfig").defaults()
@@ -14,17 +18,68 @@ return {
         end,
     },
     {
+        "danarth/sonarlint.nvim"
+    },
+    {
+        "ibhagwan/fzf-lua",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require("fzf-lua").setup({ fzf_colors = true })
+        end
+    },
+    {
         "dense-analysis/ale",
         config = function()
-            -- Configuration goes here.
             local g = vim.g
 
             g.ale_ruby_rubocop_auto_correct_all = 1
 
-            -- g.ale_linters = {
-            -- ruby = {'rubocop', 'ruby'},
-            -- lua = {'lua_language_server'}
-            -- }
+            g.ale_fixers = {
+                cpp = {'uncrustify', 'trim_whitespace'},
+                c = {'uncrustify', 'trim_whitespace'}
+            }
+
+            g.ale_linters = {
+                lua = {'lua_language_server'},
+                cpp = {'cppcheck', 'clangtidy', 'flawfinder', 'clangcheck', 'cpplint', 'clangd', 'sonarlint'},
+                c = {'cppcheck', 'clangtidy', 'flawfinder', 'clangcheck', 'cpplint', 'clangd', 'sonarlint'}
+            }
+
+            g.ale_lint_on_save = 1
+            g.ale_lint_on_enter = 1
+            g.ale_lint_on_insert_leave = 1
+
+            g.ale_virtualtext_cursor = 1
+            g.ale_virtualtext = 1
+
+            g.ale_sign_error = '✘'
+            g.ale_sign_warning = '!'
+
+            g.ale_hover_cursor = 1
+
+            g.ale_cpp_uncrustify_config = '/usr/share/uncrustify/uncrustify.cfg'
+
+            g.ale_cpp_cppcheck_options = '--enable=all --check-level=exhaustive --inconclusive --force --std=c99 --suppress=missingIncludeSystem'
+            g.ale_cpp_clangtidy_options = '-I include'
+
+            vim.api.nvim_create_user_command('Cppcheck', function()
+                vim.cmd('!cppcheck --check-level=exhaustive --force --std=c99 --suppress=missingIncludeSystem --enable=all --inconclusive *')
+            end, {})
+
+            vim.api.nvim_create_user_command('ClangTidy', function()
+                vim.cmd('!clang-tidy *.cpp -- -I include/')
+            end, {})
+
+            vim.api.nvim_create_user_command('Flawfinder', function()
+                vim.cmd('!flawfinder *')
+            end, {})
+
+            vim.api.nvim_create_user_command('RunStaticChecks', function()
+                vim.cmd('Cppcheck')
+                vim.cmd('ClangTidy')
+                vim.cmd('Flawfinder')
+            end, {})
+
         end,
         lazy = false,
     },
@@ -33,25 +88,6 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = {},
         lazy = false,
-    },
-    {
-        "williamboman/mason.nvim",
-        opts = {
-            ensure_installed = {
-                -- vim
-                "lua-language-server",
-                "stylua",
-                "clangd",
-                "cpptools",
-                "cpplint",
-                "clang-format",
-                -- web
-                "json-lsp",
-                -- other
-                "markdownlint",
-                "prettier",
-            },
-        },
     },
     {
         "nvim-treesitter/nvim-treesitter",
@@ -96,6 +132,12 @@ return {
     {
         "pocco81/auto-save.nvim",
         lazy = false,
+        config = function ()
+            require("auto-save").setup({
+                trigger_events = {"InsertLeave", "TextChanged"},
+                debounce_delay = 2500,
+            })
+        end,
     },
     {
         "wakatime/vim-wakatime",
