@@ -7,6 +7,7 @@ local servers = {
   "bashls",
   "clangd",
   "ast_grep",
+  "asm_lsp"
   -- "harper_ls"
 }
 

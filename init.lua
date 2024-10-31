@@ -70,11 +70,22 @@ require("ibl").setup {
 }
 hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
 
+local opts = { noremap=true, silent=true }
+local function quickfix()
+    vim.lsp.buf.code_action({
+        filter = function(a) return a.isPreferred end,
+        apply = true
+    })
+end
+
 vim.api.nvim_set_keymap('n', '<Leader>blame', ':BlameToggle virtual<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-p>', require('fzf-lua').builtin, { desc = "fzf builtins" })
 vim.keymap.set('n', '<C-a>', require('fzf-lua').lsp_code_actions, { desc = "fzf lsp code actions" })
 vim.keymap.set('n', '<Leader>ccc', require('fzf-lua').grep_cword, { desc = "fzf cword" })
 vim.keymap.set('n', '<Leader>CCC', require('fzf-lua').grep_cWORD, { desc = "fzf cWORD" })
+vim.keymap.set('n', '<leader>qf', quickfix, opts)
+
+vim.cmd [[ autocmd BufRead,BufNewFile *.S set filetype=asm ]]
 
 vim.schedule(function()
   require "mappings"
