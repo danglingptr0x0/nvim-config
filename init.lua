@@ -41,6 +41,94 @@ require('mini.animate').setup {
     scroll = { enable = false }
 }
 
+local function insert_mod_template()
+    local lines = {
+        '#include "mod.h"',
+        '#include <stdio.h>',
+        '#include <string.h>',
+        '#include "cJSON.h"',
+        '#include "shared_interop.h"',
+        "",
+        "static mod dummy_mod;",
+        "",
+        "const char* dummy_exec_task(void **input, size_t *size)",
+        "{",
+        "    if (!input || !*input || !*size)",
+        "    {",
+        '        fprintf(stderr, "%s: invalid input!\\n", dummy_mod.name);',
+        '        return strdup("failure: couldn\'t parse JSON!");',
+        "    }",
+        "",
+        '    printf("recv input: %s\\n", (char *)*input);',
+        "    cJSON *json = cJSON_Parse((char *)*input);",
+        "    if (!json)",
+        "    {",
+        '        fprintf(stderr, "%s: invalid JSON!\\n", dummy_mod.name);',
+        '        return strdup("failure: invalid JSON!");',
+        "    }",
+        "",
+        "    cJSON *city = cJSON_GetObjectItemCaseSensitive(json, \"city\");",
+        "    if (cJSON_IsString(city) && (city->valuestring))",
+        "    {",
+        '        printf("%s: the weather in %s is ... no idea!!\\n", dummy_mod.name, city->valuestring);',
+        "        cJSON_Delete(json);",
+        '        return strdup("sunny");',
+        "    }",
+        "    else",
+        "    {",
+        '        fprintf(stderr, "%s: got no city!\\n", dummy_mod.name);',
+        "    }",
+        "    cJSON_Delete(json);",
+        '    return strdup("failure: unknown error!");',
+        "}",
+        "",
+        "void mod_shutdown(void) {}",
+        "",
+        "int mod_init(void)",
+        "{",
+        '    static const char *provides[] = { "weather_for_city" };',
+        '    static const char *expects[] = { "city" };',
+        '    static const char *hooks[] = { "check_weather" };',
+        "",
+        "    static mod_reg reg =",
+        "        {",
+        '            .task_type = "weather_for_city",',
+        "            .exec_task = dummy_exec_task,",
+        "            .provides = provides,",
+        "            .n_provides = 1,",
+        "            .expects = expects,",
+        "            .n_expects = 1",
+        "        };",
+        "",
+        "    dummy_mod =",
+        "        (mod)",
+        "            {",
+        '                .name = "DummyWeatherMod",',
+        '                .desc = "A dummy mod made for development purposes.",',
+        "                .revision = 2,",
+        "                .reg = &reg,",
+        "                .init = mod_init,",
+        "                .shutdown = mod_shutdown",
+        "            };",
+        "",
+        "    register_mod(&dummy_mod);",
+        "",
+        '    printf("%s: param overriden!\\n", dummy_mod.name);',
+        '    glob_reg->llm_name = "gpt-3.5-turbo";',
+        '    printf("%s: new val: %s\\n", dummy_mod.name, glob_reg->llm_name);',
+        "",
+        "    return 0;",
+        "}"
+    }
+    vim.api.nvim_put(lines, "l", true, true)
+end
+
+vim.api.nvim_create_user_command(
+    'ModTemplate',
+    function() insert_mod_template() end,
+    { desc = 'Insert the full mod template code' }
+)
+
 local highlight = {
     "RainbowRed",
     "RainbowYellow",
@@ -86,6 +174,7 @@ vim.keymap.set('n', '<Leader>CCC', require('fzf-lua').grep_cWORD, { desc = "fzf 
 vim.keymap.set('n', '<leader>qf', quickfix, opts)
 
 vim.cmd [[ autocmd BufRead,BufNewFile *.S set filetype=asm ]]
+vim.cmd [[ autocmd BufRead,BufNewFile *.s set filetype=asm ]]
 
 vim.schedule(function()
   require "mappings"

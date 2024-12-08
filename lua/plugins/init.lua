@@ -136,7 +136,7 @@ return {
         config = function ()
             require("auto-save").setup({
                 trigger_events = {"InsertLeave", "TextChanged"},
-                debounce_delay = 2500,
+                debounce_delay = 5000,
             })
         end,
     },
@@ -181,6 +181,11 @@ return {
                 "~/git/work/teddy/mod_media_control",
                 "~/git/work/teddy/mod_python_compat_layer",
                 "~/git/work/teddy/mod_personality_matrix_manager",
+                "~/git/work/teddy/mod_engram_manager",
+                "~/git/work/teddy/mod_stt_transcript_proofreader",
+                "~/git/work/teddy/mod_only_interrupt_and_respond_if_addressed",
+                "~/git/work/teddy/mod_wakeword_trigger",
+                "~/git/work/teddy/mod_basic_ddg_websearch",
                 "~/git/simtoon_os",
                 "~/git/HeapZy/",
                 "~/git/cuT/",
