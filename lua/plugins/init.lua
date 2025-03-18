@@ -11,6 +11,18 @@ return {
         "williamboman/mason-lspconfig.nvim"
     },
     {
+        "jedrzejboczar/possession.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("possession").setup({
+                autosave = true,
+                autoload = true,
+                silent = false,
+                session_dir = vim.fn.stdpath("data") .. "/sessions/",
+            })
+        end,
+    },
+    {
         "neovim/nvim-lspconfig",
         config = function()
             require("nvchad.configs.lspconfig").defaults()
@@ -18,7 +30,69 @@ return {
         end,
     },
     {
+        "mbbill/undotree",
+	lazy = false,
+    },
+    {
         "danarth/sonarlint.nvim"
+    },
+    {
+        "voldikss/vim-floaterm",
+        lazy = false
+    },
+    {
+        "karb94/neoscroll.nvim",
+        config = function()
+        	require("neoscroll").setup()
+        end,
+        lazy = false
+    },
+    {
+        "echasnovski/mini.animate",
+        version = "*",
+        lazy = false,
+    },
+    {
+        "vyfor/cord.nvim",
+        build = ":Cord update",
+        lazy = false,
+        -- opts = {}
+    },
+    {
+        "nvim-pack/nvim-spectre",
+        dependencies = { "nvim-lua/plenary.nvim" },
+	lazy = false,
+    },
+    {
+        "folke/zen-mode.nvim",
+        config = function()
+            require("zen-mode").setup({})
+        end,
+        lazy = false
+    },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        dependencies = { "nvim-treesitter/nvim-treesitter" },
+        lazy = false,
+    },
+    {
+        "ggandor/leap.nvim",
+        lazy = false,
+        config = function()
+            require("leap").add_default_mappings()
+        end,
+    },
+    {
+        "sindrets/diffview.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("diffview").setup()
+        end,
+        lazy = false,
+    },
+    {
+        "szw/vim-maximizer",
+        lazy = false,
     },
     {
         "ibhagwan/fzf-lua",
@@ -108,6 +182,7 @@ return {
                 "cuda",
                 "glsl",
                 "hlsl",
+		"vhdl",
                 "bash",
                 "bibtex",
                 "llvm",
@@ -129,6 +204,22 @@ return {
         },
         lazy = false,
         config = true,
+    },
+    {
+	"kdheepak/lazygit.nvim",
+	dependencies = { "nvim-lua/plenary.nvim" },
+	lazy = false
+    },
+    {
+        "RRethy/vim-illuminate",
+        lazy = false,
+    },
+    {
+        "lewis6991/impatient.nvim",
+        config = function()
+            require("impatient")
+        end,
+        lazy = false,
     },
     {
         "pocco81/auto-save.nvim",
@@ -186,11 +277,16 @@ return {
                 "~/git/work/teddy/mod_only_interrupt_and_respond_if_addressed",
                 "~/git/work/teddy/mod_wakeword_trigger",
                 "~/git/work/teddy/mod_basic_ddg_websearch",
+                "~/git/work/teddy/mod_reminders",
+                "~/git/work/teddy/mod_tavily_search",
+                "~/git/work/teddy/teddy_logger/",
+                "~/git/work/teddy/teddy/",
+                "~/git/work/teddy/mod_calendar/",
                 "~/git/simtoon_os",
                 "~/git/HeapZy/",
                 "~/git/cuT/",
                 "~/git/mathNStuff",
-                "~/git/work/c9/phillipl-bot",
+                "~/git/kaybeestat_DKMS"
             },
         },
         init = function()
@@ -287,7 +383,6 @@ return {
         },
         lazy = false,
     },
-    { 'echasnovski/mini.animate', version = '*' },
     {
         "FabijanZulj/blame.nvim",
         lazy = false,
