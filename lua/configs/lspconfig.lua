@@ -86,7 +86,7 @@ end
 
 lspconfig.bashls.setup{}
 lspconfig.clangd.setup {
-    cmd = { "clangd", "--log=verbose", "--header-insertion=never", "--clang-tidy", "--completion-style=detailed", "--inlay-hints" },
+    cmd = { "clangd", "--header-insertion=never", "--clang-tidy", "--completion-style=detailed", "--inlay-hints" },
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
         if client.server_capabilities.inlayHintProvider then

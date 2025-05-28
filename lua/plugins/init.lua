@@ -10,6 +10,14 @@ return {
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim"
     },
+    -- {
+    --     dir = "~/.config/nvim/lua",
+    --     name = "codejacker",
+    --     lazy = false,
+    --     config = function()
+    --         require("codejacker")
+    --     end,
+    -- },
     {
         "jedrzejboczar/possession.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
@@ -31,10 +39,81 @@ return {
     },
     {
         "mbbill/undotree",
-	lazy = false,
+	    lazy = false,
+    },
+    {
+        dir = "/home/simtoon/git/Δ.nvim",
+        name = "Δ",
+        event = "VeryLazy",
+        config = function()
+        end
     },
     {
         "danarth/sonarlint.nvim"
+    },
+    {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        dependencies = { "nvim-telescope/telescope.nvim" },
+        config = function()
+            require("telescope").load_extension("fzf")
+        end,
+    },
+    {
+        "lewis6991/gitsigns.nvim",
+        lazy = false,
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("gitsigns").setup {
+                diff_opts = { internal = true },
+                word_diff = true,
+                signs = {
+                    add          = { text = "┃" },
+                    change       = { text = "┃" },
+                    delete       = { text = "_" },
+                    topdelete    = { text = "‾" },
+                    changedelete = { text = "~" },
+                    untracked    = { text = "┆" },
+                },
+                signcolumn         = true,
+                numhl              = true,
+                linehl             = false,
+                show_deleted       = true,
+                current_line_blame = true,
+                current_line_blame_opts = {
+                    delay         = 100,
+                    virt_text_pos = "eol",
+                },
+                watch_gitdir       = { follow_files = true },
+                attach_to_untracked = true,
+            }
+
+            local hl = vim.api.nvim_set_hl
+
+            hl(0, "GitSignsAdd",    { fg = "#FF00FF", bg = "NONE" })
+            hl(0, "GitSignsChange", { fg = "#FFFF00", bg = "NONE" })
+            hl(0, "GitSignsDelete", { fg = "#FF0000", bg = "NONE" })
+
+            hl(0, "GitSignsAddNr",    { fg = "#FF00FF", bg = "NONE" })
+            hl(0, "GitSignsChangeNr", { fg = "#FFFF00", bg = "NONE" })
+            hl(0, "GitSignsDeleteNr", { fg = "#FF0000", bg = "NONE" })
+            --
+            -- hl(0, "GitSignsAddLn",    { bg = "#FF00FF" })
+            -- hl(0, "GitSignsChangeLn", { bg = "#FFFF00" })
+            -- hl(0, "GitSignsDeleteLn", { bg = "#FF0000" })
+
+            hl(0, "GitSignsAddInline",    { fg = "#FF00FF", bg = "NONE" })
+            hl(0, "GitSignsChangeInline", { fg = "#FFFF00", bg = "NONE" })
+            hl(0, "GitSignsDeleteInline", { fg = "#FF0000", bg = "NONE" })
+
+            hl(0, "GitSignsAddLnInline",    { fg = "#FF00FF", bg = "NONE" })
+            hl(0, "GitSignsChangeLnInline", { fg = "#FFFF00", bg = "NONE" })
+            hl(0, "GitSignsDeleteLnInline", { fg = "#FF0000", bg = "NONE" })
+
+            hl(0, "GitSignsAddVirtLnInline",    { fg = "#FF00FF", bg = "NONE" })
+            hl(0, "GitSignsChangeVirtLnInline", { fg = "#FFFF00", bg = "NONE" })
+            hl(0, "GitSignsDeleteVirtLnInline", { fg = "#FF0000", bg = "NONE" })
+        end,
     },
     {
         "voldikss/vim-floaterm",
@@ -56,7 +135,38 @@ return {
         "vyfor/cord.nvim",
         build = ":Cord update",
         lazy = false,
-        -- opts = {}
+        opts = {
+            text = {
+                editing = function(opts)
+                    local mode = vim.api.nvim_get_mode().mode
+                    local mode_label = ({
+                        i = "INS",
+                        v = "VIS",
+                        V = "V-LN",
+                        ["\22"] = "V-BLK",
+                        n = "NORM",
+                    })[mode] or "OTHER"
+
+                    return string.format("[%s] %s:%s of %s", mode_label, opts.cursor_char, opts.cursor_line, opts.filename)
+                end,
+
+                workspace = function()
+                    local bufnr = 0
+                    local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+                    local todos, fixmes = 0, 0
+
+                    for _, line in ipairs(lines) do
+                        if line:match("TODO") then todos = todos + 1 end
+                        if line:match("FIXME") then fixmes = fixmes + 1 end
+                    end
+
+                    local err  = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
+                    local warn = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.WARN })
+
+                    return string.format("todo: %d; fixme: %d | err: %d; warn: %d", todos, fixmes, err, warn)
+                end,
+            }
+        },
     },
     {
         "nvim-pack/nvim-spectre",
@@ -182,7 +292,8 @@ return {
                 "cuda",
                 "glsl",
                 "hlsl",
-		"vhdl",
+		        "vhdl",
+                "verilog",
                 "bash",
                 "bibtex",
                 "llvm",
@@ -286,9 +397,13 @@ return {
                 "~/git/work/teddy/teddy_logger/",
                 "~/git/work/teddy/teddy/",
                 "~/git/work/teddy/mod_calendar/",
-                "~/git/simtoon_os",
+                "~/git/work/codejacker/",
+                "~/git/work/codejacker_server/",
+                "~/git/work/codejacker.nvim/",
+                "~/git/dangling/",
                 "~/git/HeapZy/",
                 "~/git/cuT/",
+                "~/git/ti_rackjacker",
                 "~/git/mathNStuff",
                 "~/git/kaybeestat_DKMS"
             },
@@ -453,6 +568,18 @@ return {
     --- @module "ibl"
     --- @type ibl.config
         opts = {},
+    },
+    {
+        "pwntester/octo.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+            "nvim-tree/nvim-web-devicons",
+        },
+        config = function ()
+            require("octo").setup()
+        end,
+        lazy = false,
     },
     {
         "iamcco/markdown-preview.nvim",
