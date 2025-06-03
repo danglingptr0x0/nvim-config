@@ -4,6 +4,8 @@
 ---@type ChadrcConfig
 local M = {}
 
+vim.g.augment_workspace_folders = { "/home/simtoon/git/work/teddy/" }
+
 M.ui = {
 	theme = "falcon",
 

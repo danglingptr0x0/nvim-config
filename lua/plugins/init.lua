@@ -78,7 +78,7 @@ return {
                 signcolumn         = true,
                 numhl              = true,
                 linehl             = false,
-                show_deleted       = true,
+                show_deleted       = false,
                 current_line_blame = true,
                 current_line_blame_opts = {
                     delay         = 100,
@@ -130,6 +130,16 @@ return {
         "echasnovski/mini.animate",
         version = "*",
         lazy = false,
+    },
+    {
+        "toppair/peek.nvim",
+        event = { "VeryLazy" },
+        build = "deno task --quiet build:fast",
+        config = function()
+            require("peek").setup()
+            vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+            vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+        end,
     },
     {
         "vyfor/cord.nvim",
@@ -265,6 +275,14 @@ return {
             end, {})
 
         end,
+        lazy = false,
+    },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {},
         lazy = false,
     },
     {
@@ -584,11 +602,9 @@ return {
     {
         "iamcco/markdown-preview.nvim",
         cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-        build = "cd app && yarn install",
-        init = function()
-            vim.g.mkdp_filetypes = { "markdown" }
-        end,
         ft = { "markdown" },
+        build = function() vim.fn["mkdp#util#install"]() end,
+        lazy = false
     },
     --   'dense-analysis/ale',
     --   lazy = false,
